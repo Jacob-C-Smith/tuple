@@ -41,7 +41,13 @@
  ```
  ### Example output
  ```
- TODO
+[0] Dogs
+[1] Cats
+[2] Birds
+[3] Fish
+
+Cats
+Birds
  ```
  [Source](main.c)
 ## Tester
@@ -59,6 +65,23 @@
  ```
  ### Function definitions
  ```c 
- // TODO
- ```
+// Allocaters
+int tuple_create ( const tuple **const pp_tuple );
 
+// Constructors
+int tuple_construct     ( tuple       **const pp_tuple, size_t                size );
+int tuple_from_elements ( const tuple **const pp_tuple, void    *const *const elements );
+
+// Accessors
+int    tuple_index    ( const tuple *const p_tuple, signed             index      , void   **const pp_value );
+int    tuple_get      ( const tuple *const p_tuple, const void **const pp_elements, size_t  *const p_count );
+int    tuple_slice    ( const tuple *const p_tuple, const void **const pp_elements, signed         lower_bound, signed upper_bound );
+bool   tuple_is_empty ( const tuple *const p_tuple );
+size_t tuple_size     ( const tuple *const p_tuple );
+
+// Iterators
+int tuple_foreach_i ( const tuple *const p_tuple, void (*const function)(void *const value, size_t index) );
+
+// Destructors
+int tuple_destroy ( tuple **const pp_tuple );
+```
