@@ -93,9 +93,6 @@ int main ( int argc, const char* argv[] )
     print_time_pretty ( (double)(t1-t0)/(double)timer_seconds_divisor() );
     printf(" to test\n");
 
-    // Flush stdio
-    fflush(stdout);
-
     // Exit
     return ( total_passes == total_tests ) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
@@ -175,6 +172,7 @@ int run_tests ( )
     // Success
     return 1;
 }
+
 int print_final_summary ( )
 {
 
@@ -194,6 +192,7 @@ int print_final_summary ( )
     // Success
     return 1;
 }
+
 int print_test ( const char *scenario_name, const char *test_name, bool passed )
 {
 
@@ -243,6 +242,7 @@ bool test_get ( int(*tuple_constructor)(tuple **pp_tuple), void **expected_value
     // Return result
     return (result == expected);
 }
+
 bool test_get_count ( int(*tuple_constructor)(tuple **pp_tuple), size_t expected_size, result_t expected )
 {
     // Initialized data
@@ -349,7 +349,6 @@ bool test_slice ( int(*tuple_constructor)(tuple **pp_tuple), signed lower, signe
     return (result == expected);
 }
 
-
 int construct_empty ( tuple **pp_tuple )
 {
     // Construct an tuple
@@ -367,6 +366,7 @@ int construct_empty_fromelementsABC_ABC ( tuple **pp_tuple )
     // Success
     return 1;
 }
+
 int construct_empty_fromelementsAB_AB ( tuple **pp_tuple )
 {
 
@@ -375,6 +375,7 @@ int construct_empty_fromelementsAB_AB ( tuple **pp_tuple )
     // Success
     return 1;
 }
+
 int construct_empty_fromelementsA_A ( tuple **pp_tuple )
 {
 
@@ -398,6 +399,7 @@ int test_empty_tuple ( int (*tuple_constructor)(tuple **pp_tuple), char *name)
 
     return 1;
 }
+
 int test_one_element_tuple ( int (*tuple_constructor)(tuple **pp_tuple), char *name, void **values )
 {
 
@@ -415,6 +417,7 @@ int test_one_element_tuple ( int (*tuple_constructor)(tuple **pp_tuple), char *n
     // Success
     return 1;
 }
+
 int test_two_element_tuple ( int (*tuple_constructor)(tuple **pp_tuple), char *name, void **values )
 {
     printf("SCENARIO: %s\n", name);
@@ -431,6 +434,7 @@ int test_two_element_tuple ( int (*tuple_constructor)(tuple **pp_tuple), char *n
     // Success
     return 1;
 }
+
 int test_three_element_tuple ( int (*tuple_constructor)(tuple **pp_tuple), char *name, void **values )
 {
     printf("SCENARIO: %s\n", name);
