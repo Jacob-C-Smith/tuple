@@ -542,10 +542,10 @@ int tuple_destroy ( tuple **const pp_tuple )
 
     // Free the tuple contents
     if ( p_tuple->element_count )
-        if ( TUPLE_REALLOC(p_tuple->elements, 0) ) goto failed_to_free;
+        (void)TUPLE_REALLOC(p_tuple->elements, 0);
 
     // Free the tuple
-    if ( TUPLE_REALLOC(p_tuple, 0) ) goto failed_to_free;
+    (void)TUPLE_REALLOC(p_tuple, 0);
     
     // Success
     return 1;
@@ -558,17 +558,6 @@ int tuple_destroy ( tuple **const pp_tuple )
             no_tuple:
                 #ifndef NDEBUG
                     printf("[tuple] Null pointer provided for \"pp_tuple\" in call to function \"%s\"\n", __FUNCTION__);
-                #endif
-
-                // Error
-                return 0;
-        }
-
-        // Standard library errors
-        {
-            failed_to_free:
-                #ifndef NDEBUG
-                    printf("[Standard Library] Call to \"realloc\" returned an erroneous value in call to function \"%s\"\n", __FUNCTION__);
                 #endif
 
                 // Error
