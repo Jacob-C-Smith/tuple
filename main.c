@@ -18,13 +18,15 @@ int main ( int argc, const char* argv[] )
     char     *slice_of_tuple[] = { 0, 0, (void *)0 };
 
     // Make an tuple with 4 elements
-    tuple_construct(&p_tuple, 4);
+    tuple_from_elements(&p_tuple, elements);
 
     // Print the tuples' keys
     print_all_elements(p_tuple);
 
+    // Get elements [1:2]
     tuple_slice(p_tuple, &slice_of_tuple, 1, 2);
 
+    // Print the slice
     printf("%s\n",slice_of_tuple[0]);
     printf("%s\n",slice_of_tuple[1]);
     
