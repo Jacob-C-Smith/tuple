@@ -1,0 +1,48 @@
+|==============|
+| TUPLE TESTER |
+|==============|
+
+Scenario: empty
+empty_test_tuple_index0      PASS
+empty_test_tuple_index1      PASS
+empty_test_tuple_get         PASS
+empty_test_tuple_get_count   PASS
+
+Tests: 4, Passed: 4, Failed: 0 (%100.000)
+Total: 4, Passed: 4, Failed: 0 (%100.000)
+
+SCENARIO: empty_fromelementsA_A
+empty_fromelementsA_A_test_tuple_get         PASS
+empty_fromelementsA_A_test_tuple_size        PASS
+empty_fromelementsA_A_test_tuple_index0      PASS
+empty_fromelementsA_A_test_tuple_index1      PASS
+empty_fromelementsA_A_test_tuple_get         PASS
+empty_fromelementsA_A_test_tuple_get_count   PASS
+
+Tests: 6, Passed: 6, Failed: 0 (%100.000)
+Total: 10, Passed: 10, Failed: 0 (%100.000)
+
+SCENARIO: empty_fromelementsAB_AB
+empty_fromelementsAB_AB_test_tuple_get         PASS
+empty_fromelementsAB_AB_test_tuple_size        PASS
+empty_fromelementsAB_AB_test_tuple_index0      PASS
+empty_fromelementsAB_AB_test_tuple_index1      PASS
+empty_fromelementsAB_AB_test_tuple_index2      PASS
+empty_fromelementsAB_AB_test_tuple_get_count   PASS
+
+Tests: 6, Passed: 6, Failed: 0 (%100.000)
+Total: 16, Passed: 16, Failed: 0 (%100.000)
+
+SCENARIO: empty_fromelementsABC_ABC
+empty_fromelementsABC_ABC_test_tuple_get         PASS
+empty_fromelementsABC_ABC_test_tuple_size        PASS
+empty_fromelementsABC_ABC_test_tuple_index0      PASS
+empty_fromelementsABC_ABC_test_tuple_index1      PASS
+empty_fromelementsABC_ABC_test_tuple_index2      PASS
+empty_fromelementsABC_ABC_test_tuple_index3      PASS
+empty_fromelementsABC_ABC_test_tuple_get_count   PASS
+
+Tests: 7, Passed: 7, Failed: 0 (%100.000)
+Total: 23, Passed: 23, Failed: 0 (%100.000)
+
+tuple took 180 us to test
