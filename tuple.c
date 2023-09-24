@@ -24,11 +24,9 @@ int tuple_create ( const tuple **const pp_tuple )
 {
 
     // Argument check
-    #ifndef NDEBUG
-        if ( pp_tuple == (void *) 0 ) goto no_tuple;
-    #endif
+    if ( pp_tuple == (void *) 0 ) goto no_tuple;
 
-    // Allocate memory for an tuple
+    // Allocate memory for a tuple
     tuple *p_tuple = TUPLE_REALLOC(0, sizeof(tuple));
 
     // Error checking
@@ -74,14 +72,12 @@ int tuple_construct ( tuple **const pp_tuple, size_t size )
 {
 
     // Argument check
-    #ifndef NDEBUG
-        if ( pp_tuple == (void *) 0 ) goto no_tuple;
-    #endif
+    if ( pp_tuple == (void *) 0 ) goto no_tuple;
 
     // Initialized data
     tuple *p_tuple = 0;
 
-    // Allocate an tuple
+    // Allocate a tuple
     if ( tuple_create(pp_tuple) == 0 ) goto failed_to_create_tuple;
     
     // Get a pointer to the allocated tuple
@@ -150,10 +146,8 @@ int tuple_from_elements ( const tuple **const pp_tuple, void *const *const eleme
 {
 
     // Argument check
-    #ifndef NDEBUG
-        if ( pp_tuple == (void *) 0 ) goto no_tuple;
-        if ( elements == (void *) 0 ) goto no_elements;
-    #endif
+    if ( pp_tuple == (void *) 0 ) goto no_tuple;
+    if ( elements == (void *) 0 ) goto no_elements;
 
     // Initialized data
     tuple  *p_tuple       = 0;
@@ -169,7 +163,7 @@ int tuple_from_elements ( const tuple **const pp_tuple, void *const *const eleme
         // Count elements
         while( elements[++element_count] );
 
-    // Allocate an tuple
+    // Allocate a tuple
     if ( tuple_construct(&p_tuple, element_count) == 0 ) goto failed_to_allocate_tuple;        
 
     // Iterate over each key
@@ -222,15 +216,81 @@ int tuple_from_elements ( const tuple **const pp_tuple, void *const *const eleme
     }
 }
 
+int tuple_from_arguments ( const tuple **const pp_tuple, int element_count, ... )
+{
+
+    // Argument check
+    if ( pp_tuple == (void *) 0 ) goto no_tuple;
+
+    // Uninitialized data
+    va_list list;
+
+    // Initialized data
+    tuple *p_tuple = 0;
+
+    // Initialize the variadic list
+    va_start(list, element_count);
+
+    // Allocate a tuple
+    if ( tuple_construct(&p_tuple, element_count) == 0 ) goto failed_to_allocate_tuple;        
+
+    // Iterate over each key
+    for (size_t i = 0; i < element_count; i++)
+
+        // Add the key to the tuple
+        p_tuple->elements[i] = va_arg(list, void *);
+    
+    // End the variadic list
+    va_end(list);
+
+    // Return
+    *pp_tuple = p_tuple;
+
+    // Success
+    return 1;
+
+    // Error handling
+    {
+
+        // Argument errors
+        {
+            no_tuple:
+                #ifndef NDEBUG
+                    printf("[tuple] Null pointer provided for \"pp_tuple\" in call to function \"%s\"\n", __FUNCTION__);
+                #endif
+
+                // Error 
+                return 0;
+
+            no_elements:
+                #ifndef NDEBUG
+                    printf("[tuple] Null pointer provided for \"keys\" in call to function \"%s\"\n", __FUNCTION__);
+                #endif
+
+                // Error 
+                return 0;
+        }
+
+        // Tuple errors
+        {
+            failed_to_allocate_tuple:
+                #ifndef NDEBUG
+                    printf("[tuple] Call to \"tuple_construct\" returned an erroneous value in call to function \"%s\"\n", __FUNCTION__);
+                #endif
+
+                // Error
+                return 0;
+        }
+    }
+}
+
 int tuple_index ( const tuple *const p_tuple, signed index, void **const pp_value )
 {
 
-    // Argument errors
-    #ifndef NDEBUG
-        if ( p_tuple                == (void *) 0 ) goto no_tuple;
-        if ( p_tuple->element_count ==          0 ) goto no_elements;
-        if ( pp_value               == (void *) 0 ) goto no_value;
-    #endif
+    // Argument check
+    if ( p_tuple                == (void *) 0 ) goto no_tuple;
+    if ( p_tuple->element_count ==          0 ) goto no_elements;
+    if ( pp_value               == (void *) 0 ) goto no_value;
 
     // Error check
     if ( p_tuple->element_count == abs(index) ) goto bounds_error;
@@ -294,9 +354,7 @@ int tuple_get ( const tuple *const p_tuple, const void **const pp_elements, size
 {
 
     // Argument check
-    #ifndef NDEBUG
-        if ( p_tuple == (void *) 0 ) goto no_tuple;
-    #endif
+    if ( p_tuple == (void *) 0 ) goto no_tuple;
 
     // Return the elements
     if ( pp_elements )
@@ -329,11 +387,9 @@ int tuple_slice ( const tuple *const p_tuple, const void **const pp_elements, si
 {
 
     // Argument check
-    #ifndef NDEBUG
-        if ( p_tuple == (void *) 0 ) goto no_tuple;
-        if ( lower_bound < 0 ) goto erroneous_lower_bound;
-        if ( p_tuple->element_count < upper_bound ) goto erroneous_upper_bound;
-    #endif
+    if ( p_tuple == (void *) 0 ) goto no_tuple;
+    if ( lower_bound < 0 ) goto erroneous_lower_bound;
+    if ( p_tuple->element_count < upper_bound ) goto erroneous_upper_bound;
 
     // Return the elements
     if ( pp_elements )
@@ -378,9 +434,7 @@ bool tuple_is_empty ( const tuple *const p_tuple )
 {
 
     // Argument check
-    #ifndef NDEBUG
-        if ( p_tuple == (void *) 0 ) goto no_tuple;
-    #endif
+    if ( p_tuple == (void *) 0 ) goto no_tuple;
 
     // Success
     return ( p_tuple->element_count == 0 );
@@ -405,9 +459,7 @@ size_t tuple_size ( const tuple *const p_tuple )
 {
 
     // Argument check
-    #ifndef NDEBUG
-        if ( p_tuple == (void *) 0 ) goto no_tuple;
-    #endif
+    if ( p_tuple == (void *) 0 ) goto no_tuple;
 
     // Success
     return p_tuple->element_count;
@@ -432,10 +484,7 @@ int tuple_add ( tuple *const p_tuple, void *const p_element )
 {
 
     // Argument check
-    #ifndef NDEBUG
-        if ( p_tuple == (void *) 0 ) goto no_tuple;
-    #endif
-
+    if ( p_tuple == (void *) 0 ) goto no_tuple;
 
     // Increment the entry counter
     p_tuple->element_count++;
@@ -488,10 +537,8 @@ int tuple_foreach ( const tuple *const p_tuple, void (*const function)(void *con
 {
 
     // Argument check
-    #ifndef NDEBUG
-        if ( p_tuple  == (void *) 0 ) goto no_tuple;
-        if ( function == (void *) 0 ) goto no_free_func;
-    #endif
+    if ( p_tuple  == (void *) 0 ) goto no_tuple;
+    if ( function == (void *) 0 ) goto no_free_func;
 
     // Iterate over each element in the tuple
     for (size_t i = 0; i < p_tuple->element_count; i++)
@@ -530,9 +577,7 @@ int tuple_destroy ( tuple **const pp_tuple )
 {
 
     // Argument check
-    #ifndef NDEBUG
-        if ( pp_tuple == (void *) 0 ) goto no_tuple;
-    #endif
+    if ( pp_tuple == (void *) 0 ) goto no_tuple;
 
     // Initialized data
     tuple *p_tuple = *pp_tuple;

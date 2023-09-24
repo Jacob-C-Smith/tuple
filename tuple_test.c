@@ -351,7 +351,7 @@ bool test_slice ( int(*tuple_constructor)(tuple **pp_tuple), signed lower, signe
 
 int construct_empty ( tuple **pp_tuple )
 {
-    // Construct an tuple
+    // Construct a tuple
     tuple_construct(pp_tuple, 0);
 
     // tuple = []
