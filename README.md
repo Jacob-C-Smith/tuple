@@ -41,11 +41,13 @@
  ```
  ### Example output
  ```
+Constructing tuple ("Dogs", "Cats", "Birds", "Fish")
 [0] Dogs
 [1] Cats
 [2] Birds
 [3] Fish
 
+Tuple slice [1:2]
 Cats
 Birds
  ```
@@ -69,8 +71,9 @@ Birds
 int tuple_create ( const tuple **const pp_tuple );
 
 // Constructors
-int tuple_construct     ( tuple       **const pp_tuple, size_t                size );
-int tuple_from_elements ( const tuple **const pp_tuple, void    *const *const elements );
+int tuple_construct      ( tuple       **const pp_tuple, size_t               size );
+int tuple_from_elements  ( const tuple **const pp_tuple, void   *const *const elements );
+int tuple_from_arguments ( const tuple **const pp_tuple, int                  element_count, ... );
 
 // Accessors
 int    tuple_index    ( const tuple *const p_tuple, signed             index      , void   **const pp_value );

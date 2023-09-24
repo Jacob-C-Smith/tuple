@@ -6,22 +6,34 @@
 #include <tuple/tuple.h>
 
 // Forward declaration
-int print_all_elements(tuple* a);
+/** !
+ *  Print the elements of the tuple as strings
+ * 
+ * @param p_tuple the tuple
+ * 
+ * @return 1 on success, 0 on error
+*/
+int print_all_elements ( tuple *p_tuple );
 
 // Entry point
 int main ( int argc, const char* argv[] )
 {
 
     // Initialized data
-    char     *elements[]       = { "Dogs", "Cats", "Birds", "Fish", (void*)0 };
-    tuple    *p_tuple          = (void *) 0;
-    char     *slice_of_tuple[] = { 0, 0, (void *)0 };
+    tuple *p_tuple          = (void *) 0;
+    char  *slice_of_tuple[] = { 0, 0, (void *)0 };
 
-    // Make an tuple with 4 elements
-    tuple_from_elements(&p_tuple, elements);
+    // Log
+    printf("Constructing tuple (\"Dogs\", \"Cats\", \"Birds\", \"Fish\")\n");
+
+    // Make a tuple with 4 elements
+    tuple_from_arguments(&p_tuple, 4, "Dogs", "Cats", "Birds", "Fish");
 
     // Print the tuples' keys
     print_all_elements(p_tuple);
+
+    // Log
+    printf("Tuple slice [1:2]\n");
 
     // Get elements [1:2]
     tuple_slice(p_tuple, &slice_of_tuple, 1, 2);
@@ -38,18 +50,26 @@ int main ( int argc, const char* argv[] )
 }
 
 // Print the tuples' elements
-int print_all_elements(tuple* p_tuple)
+int print_all_elements ( tuple *p_tuple )
 {
 
-    if ( p_tuple == 0 )
-        return 0;
+    // Argument check
+    if ( p_tuple == 0 ) return 0;
 
-    // Get the tuples' elements
+    // Initialized data
     void   **pp_elements   = 0;
     size_t   count         = 0;
 
+    // Get quantity of elements in the tuple
     tuple_get(p_tuple, 0, &count);
+
+    // Allocate memory for tuple contents
     pp_elements = calloc(count, sizeof(void *));
+
+    // Error check
+    if ( pp_elements == (void *) 0 ) return 0;
+
+    // Get the contents of the tuple
     tuple_get(p_tuple, pp_elements, 0);
 
     // Iterate over each element
@@ -60,6 +80,9 @@ int print_all_elements(tuple* p_tuple)
     
     // Formatting
     putchar('\n');
+
+    // Clean up
+    free(pp_elements);
     
     // Success
     return 1;
