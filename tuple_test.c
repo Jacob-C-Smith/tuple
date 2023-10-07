@@ -361,7 +361,7 @@ int construct_empty ( tuple **pp_tuple )
 int construct_empty_fromelementsABC_ABC ( tuple **pp_tuple )
 {
 
-    tuple_from_elements(pp_tuple, (void **)ABC_elements);
+    tuple_from_elements(pp_tuple, (void **)ABC_elements, 3);
 
     // Success
     return 1;
@@ -370,7 +370,7 @@ int construct_empty_fromelementsABC_ABC ( tuple **pp_tuple )
 int construct_empty_fromelementsAB_AB ( tuple **pp_tuple )
 {
 
-    tuple_from_elements(pp_tuple, (void **)AB_elements);
+    tuple_from_elements(pp_tuple, (void **)AB_elements, 2);
 
     // Success
     return 1;
@@ -379,7 +379,7 @@ int construct_empty_fromelementsAB_AB ( tuple **pp_tuple )
 int construct_empty_fromelementsA_A ( tuple **pp_tuple )
 {
 
-    tuple_from_elements(pp_tuple, (void **)A_elements);
+    tuple_from_elements(pp_tuple, (void **)A_elements, 1);
 
     // Success
     return 1;

@@ -142,7 +142,7 @@ int tuple_construct ( tuple **const pp_tuple, size_t size )
     }
 }
 
-int tuple_from_elements ( const tuple **const pp_tuple, void *const *const elements )
+int tuple_from_elements ( const tuple **const pp_tuple, void *const *const elements, size_t size )
 {
 
     // Argument check
@@ -150,21 +150,10 @@ int tuple_from_elements ( const tuple **const pp_tuple, void *const *const eleme
     if ( elements == (void *) 0 ) goto no_elements;
 
     // Initialized data
-    tuple  *p_tuple       = 0;
-    size_t  element_count = 0;
-
-    // Edge case
-    if ( elements[0] == 0 )
-        element_count = 0;
-
-    // Default case
-    else
-
-        // Count elements
-        while( elements[++element_count] );
+    tuple *p_tuple = 0;
 
     // Allocate a tuple
-    if ( tuple_construct(&p_tuple, element_count) == 0 ) goto failed_to_allocate_tuple;        
+    if ( tuple_construct(&p_tuple, size) == 0 ) goto failed_to_allocate_tuple;        
 
     // Iterate over each key
     for (size_t i = 0; elements[i]; i++)
@@ -173,7 +162,7 @@ int tuple_from_elements ( const tuple **const pp_tuple, void *const *const eleme
         p_tuple->elements[i] = elements[i];
 
     // Set the quantity of elements
-    p_tuple->element_count = element_count;
+    p_tuple->element_count = size;
 
     // Return
     *pp_tuple = p_tuple;

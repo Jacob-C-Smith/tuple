@@ -79,7 +79,7 @@ DLLEXPORT int tuple_construct ( tuple **const pp_tuple, size_t size );
  *
  * @return 1 on success, 0 on error
  */
-DLLEXPORT int tuple_from_elements ( const tuple **const pp_tuple, void *const *const elements );
+DLLEXPORT int tuple_from_elements ( const tuple **const pp_tuple, void *const *const elements, size_t size );
 
 /** !
  *  Construct a tuple from parameters

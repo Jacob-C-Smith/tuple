@@ -72,7 +72,7 @@ int tuple_create ( const tuple **const pp_tuple );
 
 // Constructors
 int tuple_construct      ( tuple       **const pp_tuple, size_t               size );
-int tuple_from_elements  ( const tuple **const pp_tuple, void   *const *const elements );
+int tuple_from_elements  ( const tuple **const pp_tuple, void   *const *const elements     , size_t size );
 int tuple_from_arguments ( const tuple **const pp_tuple, int                  element_count, ... );
 
 // Accessors
