@@ -17,19 +17,6 @@ if (${IS_DEBUG_BUILD})
     add_compile_definitions(NDEBUG)
 endif ()
 
-# Find the sync module
-if ( NOT "${HAS_SYNC}")
-
-    # Log
-    message("[tuple] Adding sync project")
-
-    # Add the sync directory
-    add_subdirectory(${CMAKE_SOURCE_DIR}/extern/sync ${CMAKE_SOURCE_DIR}/build/sync)
-
-    # Let any parent project know that this project has sync
-    set(HAS_SYNC true PARENT_SCOPE)
-endif()
-
 # Add the tuple project
 if ( NOT "${HAS_TUPLE}")
 
@@ -46,9 +33,9 @@ target_include_directories(tuple_example PUBLIC include include/tuple)
 
 # Add source to the tester
 add_executable (tuple_test "tuple_test.c" "tuple.c")
-add_dependencies(tuple_test sync)
+add_dependencies(tuple_test)
 target_include_directories(tuple_test PUBLIC include ${CMAKE_SOURCE_DIR}/extern/sync/include/)
-target_link_libraries(tuple_test sync)
+target_link_libraries(tuple_test)
 
 # Add source to this project's library
 add_library (tuple SHARED "tuple.c")
