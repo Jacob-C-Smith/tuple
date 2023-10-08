@@ -33,6 +33,7 @@ target_include_directories(tuple_example PUBLIC include include/tuple)
 
 # Add source to the tester
 add_executable (tuple_test "tuple_test.c" "tuple.c")
+add_dependencies(tuple_test)
 target_include_directories(tuple_test PUBLIC include ${CMAKE_SOURCE_DIR}/extern/sync/include/)
 target_link_libraries(tuple_test)
 
