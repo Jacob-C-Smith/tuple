@@ -30,6 +30,19 @@ if ( NOT "${HAS_SYNC}")
     set(HAS_SYNC true PARENT_SCOPE)
 endif()
 
+# Find the log module
+if ( NOT "${HAS_LOG}")
+
+    # Log
+    message("[stack] Adding log project")
+
+    # Add the log directory
+    add_subdirectory(${CMAKE_SOURCE_DIR}/extern/log ${CMAKE_SOURCE_DIR}/build/log)
+
+    # Let any parent project know that this project has log
+    set(HAS_LOG true PARENT_SCOPE)
+endif()
+
 # Add the tuple project
 if ( NOT "${HAS_TUPLE}")
 
@@ -46,9 +59,9 @@ target_include_directories(tuple_example PUBLIC include include/tuple)
 
 # Add source to the tester
 add_executable (tuple_test "tuple_test.c" "tuple.c")
-add_dependencies(tuple_test sync)
+add_dependencies(tuple_test sync log)
 target_include_directories(tuple_test PUBLIC include ${CMAKE_SOURCE_DIR}/extern/sync/include/)
-target_link_libraries(tuple_test sync)
+target_link_libraries(tuple_test sync log)
 
 # Add source to this project's library
 add_library (tuple SHARED "tuple.c")
