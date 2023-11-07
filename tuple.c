@@ -575,8 +575,7 @@ int tuple_destroy ( tuple **const pp_tuple )
     *pp_tuple = (tuple *) 0;
 
     // Free the tuple contents
-    if ( p_tuple->element_count )
-        (void)TUPLE_REALLOC(p_tuple->elements, 0);
+    (void)TUPLE_REALLOC(p_tuple->elements, 0);
 
     // Free the tuple
     (void)TUPLE_REALLOC(p_tuple, 0);
