@@ -1,5 +1,5 @@
-﻿# Need CMake 3.0
-cmake_minimum_required (VERSION 3.0)
+﻿# Need CMake 3.28.0
+cmake_minimum_required (VERSION 3.28.0)
 
 # This is the name of the repository
 project ("tuple")
@@ -27,42 +27,53 @@ if ( NOT "${HAS_SYNC}")
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/sync ${CMAKE_SOURCE_DIR}/build/sync)
 
     # Let any parent project know that this project has sync
-    set(HAS_SYNC true PARENT_SCOPE)
+    if(NOT PROJECT_IS_TOP_LEVEL)
+        set(HAS_SYNC true PARENT_SCOPE)
+        set(SYNC_INCLUDE_DIR ${SYNC_INCLUDE_DIR} PARENT_SCOPE)
+    endif()
 endif()
 
 # Find the log module
 if ( NOT "${HAS_LOG}")
 
-    # Log
-    message("[stack] Adding log project")
-
     # Add the log directory
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/log ${CMAKE_SOURCE_DIR}/build/log)
 
     # Let any parent project know that this project has log
-    set(HAS_LOG true PARENT_SCOPE)
+    if(NOT PROJECT_IS_TOP_LEVEL)
+        set(HAS_LOG true PARENT_SCOPE)
+        set(LOG_INCLUDE_DIR ${LOG_INCLUDE_DIR} PARENT_SCOPE)
+    endif()
 endif()
 
 # Add the tuple project
 if ( NOT "${HAS_TUPLE}")
 
-    # Log
-    message("[tuple] Adding tuple project")
-
     # Let any parent project know that it has the tuple project
     set(HAS_TUPLE true PARENT_SCOPE)
+
+    # Set the tuple include
+    set (TUPLE_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
+
+    # Let any parent project know that it has the socket project
+    if(NOT PROJECT_IS_TOP_LEVEL)
+        set(HAS_TUPLE true PARENT_SCOPE)
+        set(TUPLE_INCLUDE_DIR ${TUPLE_INCLUDE_DIR} PARENT_SCOPE)
+    endif()
 endif()
 
 # Add source to this project's executable.
-add_executable (tuple_example "main.c" "tuple.c")
-target_include_directories(tuple_example PUBLIC include include/tuple)
+add_executable (tuple_example "main.c")
+add_dependencies(tuple_example tuple)
+target_include_directories(tuple_example PUBLIC ${TUPLE_INCLUDE_DIR})
+target_link_libraries(tuple_example tuple)
 
 # Add source to the tester
-add_executable (tuple_test "tuple_test.c" "tuple.c")
-add_dependencies(tuple_test sync log)
-target_include_directories(tuple_test PUBLIC include ${CMAKE_SOURCE_DIR}/extern/sync/include/)
-target_link_libraries(tuple_test sync log)
+add_executable (tuple_test "tuple_test.c")
+add_dependencies(tuple_test tuple sync log)
+target_include_directories(tuple_test PUBLIC include ${SYNC_INCLUDE_DIR} ${LOG_INCLUDE_DIR})
+target_link_libraries(tuple_test tuple sync log)
 
 # Add source to this project's library
 add_library (tuple SHARED "tuple.c")
-target_include_directories(tuple PUBLIC include include/tuple )
+target_include_directories(tuple PUBLIC ${TUPLE_INCLUDE_DIR})
