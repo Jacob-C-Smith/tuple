@@ -9,13 +9,23 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/extern/)
 
+# Compiler warnings
+add_compile_options(-Wall -Wextra -Wpointer-arith -Wstrict-prototypes -Wformat-security -Wfloat-equal -Wshadow -Wconversion -pthread -lpthread -Wlogical-not-parentheses -Wnull-dereference)
+
 # Comment out for Debug mode
 set(IS_DEBUG_BUILD CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-# Set for debug mode
+# Build sync with semaphore
+add_compile_definitions(BUILD_SYNC_WITH_SEMAPHORE)
+
+# Build sync with monitor
+add_compile_definitions(BUILD_SYNC_WITH_MONITOR)
+
+# Set debug mode
 if (${IS_DEBUG_BUILD})
     add_compile_definitions(NDEBUG)
-endif ()
+endif()
+
 
 # Find the sync module
 if ( NOT "${HAS_SYNC}")
@@ -64,9 +74,9 @@ endif()
 
 # Add source to this project's executable.
 add_executable (tuple_example "main.c")
-add_dependencies(tuple_example tuple)
-target_include_directories(tuple_example PUBLIC ${TUPLE_INCLUDE_DIR})
-target_link_libraries(tuple_example tuple)
+add_dependencies(tuple_example tuple log sync)
+target_include_directories(tuple_example PUBLIC ${TUPLE_INCLUDE_DIR} ${SYNC_INCLUDE_DIR} ${LOG_INCLUDE_DIR})
+target_link_libraries(tuple_example tuple log sync)
 
 # Add source to the tester
 add_executable (tuple_test "tuple_test.c")
@@ -76,4 +86,6 @@ target_link_libraries(tuple_test tuple sync log)
 
 # Add source to this project's library
 add_library (tuple SHARED "tuple.c")
-target_include_directories(tuple PUBLIC ${TUPLE_INCLUDE_DIR})
+add_dependencies(tuple sync log)
+target_include_directories(tuple PUBLIC ${TUPLE_INCLUDE_DIR} ${SYNC_INCLUDE_DIR} ${LOG_INCLUDE_DIR})
+target_link_libraries(tuple sync log)

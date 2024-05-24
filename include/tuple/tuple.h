@@ -16,6 +16,9 @@
 #include <string.h>
 #include <stdarg.h>
 
+// log module
+#include <log/log.h>
+
 // Debug mode
 #undef NDEBUG
 
@@ -40,6 +43,16 @@ struct tuple_s;
  */
 typedef struct tuple_s tuple;
 
+// Initializers
+/** !
+ * This gets called once before main
+ * 
+ * @param void
+ * 
+ * @return void
+*/
+DLLEXPORT void tuple_init ( void ) __attribute__((constructor));
+
 // Allocaters
 /** !
  *  Allocate memory for a tuple
@@ -50,7 +63,7 @@ typedef struct tuple_s tuple;
  *
  * @return 1 on success, 0 on error
  */
-DLLEXPORT int tuple_create ( const tuple **const pp_tuple );
+DLLEXPORT int tuple_create ( tuple **const pp_tuple );
 
 // Constructors
 /** !
@@ -79,7 +92,7 @@ DLLEXPORT int tuple_construct ( tuple **const pp_tuple, size_t size );
  *
  * @return 1 on success, 0 on error
  */
-DLLEXPORT int tuple_from_elements ( const tuple **const pp_tuple, void *const *const elements, size_t size );
+DLLEXPORT int tuple_from_elements ( tuple **const pp_tuple, void *const *const elements, size_t size );
 
 /** !
  *  Construct a tuple from parameters
@@ -94,7 +107,7 @@ DLLEXPORT int tuple_from_elements ( const tuple **const pp_tuple, void *const *c
  *
  * @return 1 on success, 0 on error
  */
-DLLEXPORT int tuple_from_arguments ( const tuple **const pp_tuple, int element_count, ... );
+DLLEXPORT int tuple_from_arguments ( tuple **const pp_tuple, size_t element_count, ... );
 
 // Accessors
 /** !
@@ -110,20 +123,7 @@ DLLEXPORT int tuple_from_arguments ( const tuple **const pp_tuple, int element_c
  * 
  * @return 1 on success, 0 on error 
  */
-DLLEXPORT int tuple_index ( const tuple *const p_tuple, signed index, void **const pp_value );
-
-/** !
- *  Get a tuple of elements
- *
- * @param p_tuple tuple
- * @param pp_elements return
- *
- * @sa tuple_index
- * @sa tuple_slice
- *
- * @return  1 on success, 0 on error 
- */
-DLLEXPORT int tuple_get ( const tuple * const p_tuple, const void ** const pp_elements, size_t *const p_count );
+DLLEXPORT int tuple_index ( const tuple *const p_tuple, signed long long index, void **const pp_value );
 
 /** !
  * Get a slice of the tuple specified by a lower bound and an upper bound
@@ -138,7 +138,7 @@ DLLEXPORT int tuple_get ( const tuple * const p_tuple, const void ** const pp_el
  * 
  * @return 1 on success, 0 on error 
 */
-DLLEXPORT int tuple_slice ( const tuple *const p_tuple, const void ** const pp_elements, signed lower_bound, signed upper_bound );
+DLLEXPORT int tuple_slice ( const tuple *const p_tuple, const void **const pp_elements, signed long long lower_bound, signed long long upper_bound );
 
 /** !
  *  Is a tuple empty?
@@ -180,3 +180,13 @@ DLLEXPORT int tuple_foreach_i ( const tuple *const p_tuple, void (*const functio
  * @return 1 on success, 0 on error
  */
 DLLEXPORT int tuple_destroy ( tuple **const pp_tuple );
+
+// Cleanup
+/** !
+ * This gets called once after main
+ * 
+ * @param void
+ * 
+ * @return void
+*/
+DLLEXPORT void tuple_exit ( void ) __attribute__((destructor));
