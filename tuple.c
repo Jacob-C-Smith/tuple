@@ -12,8 +12,8 @@
 // Structure definitions
 struct tuple_s
 {
-    size_t   element_count; // Integer quantity of elements
-    void   **elements;      // Tuple contents
+    size_t   element_count; // Quantity of elements
+    void   *_p_elements[];  // Tuple contents
 };
 
 // Data
@@ -94,19 +94,19 @@ int tuple_construct ( tuple **const pp_tuple, size_t size )
     tuple *p_tuple = 0;
 
     // Allocate a tuple
-    if ( tuple_create(pp_tuple) == 0 ) goto failed_to_create_tuple;
-    
-    // Get a pointer to the allocated tuple
-    p_tuple = *pp_tuple;
+    if ( tuple_create(&p_tuple) == 0 ) goto failed_to_create_tuple;
 
     // Set the count and iterator max
     p_tuple->element_count = size;
 
-    // Allocate "size" number of properties
-    p_tuple->elements = TUPLE_REALLOC(0, size * sizeof(void *));
+    // Grow the allocation
+    p_tuple = TUPLE_REALLOC(p_tuple, sizeof(tuple) + ( size * sizeof(void *) ) );
 
     // Error checking
-    if ( p_tuple->elements == (void *) 0 ) goto no_mem;
+    if ( p_tuple->_p_elements == (void *) 0 ) goto no_mem;
+
+    // Return a pointer to the caller
+    *pp_tuple = p_tuple;
 
     // Success
     return 1;
@@ -166,7 +166,7 @@ int tuple_from_elements ( tuple **const pp_tuple, void *const *const elements, s
     for (size_t i = 0; elements[i]; i++)
 
         // Add the key to the tuple
-        p_tuple->elements[i] = elements[i];
+        p_tuple->_p_elements[i] = elements[i];
 
     // Set the quantity of elements
     p_tuple->element_count = size;
@@ -235,7 +235,7 @@ int tuple_from_arguments ( tuple **const pp_tuple, size_t element_count, ... )
     for (size_t i = 0; i < element_count; i++)
 
         // Add the key to the tuple
-        p_tuple->elements[i] = va_arg(list, void *);
+        p_tuple->_p_elements[i] = va_arg(list, void *);
     
     // End the variadic list
     va_end(list);
@@ -294,11 +294,11 @@ int tuple_index ( const tuple *const p_tuple, signed long long index, void **con
 
     // Positive index
     if ( index >= 0 )
-        *pp_value = p_tuple->elements[index];
+        *pp_value = p_tuple->_p_elements[index];
 
     // Negative numbers
     else 
-        *pp_value = p_tuple->elements[p_tuple->element_count - (size_t) ( index * -1 )];
+        *pp_value = p_tuple->_p_elements[p_tuple->element_count - (size_t) ( index * -1 )];
 
     // Success
     return 1;
@@ -349,7 +349,7 @@ int tuple_slice ( const tuple *const p_tuple, const void **const pp_elements, si
     if ( p_tuple->element_count < (size_t) upper_bound ) goto erroneous_upper_bound;
 
     // Return the elements
-    memcpy(pp_elements, &p_tuple->elements[lower_bound], sizeof(void *) * (size_t) ( upper_bound - lower_bound + 1 ) );
+    memcpy(pp_elements, &p_tuple->_p_elements[lower_bound], sizeof(void *) * (size_t) ( upper_bound - lower_bound + 1 ) );
 
     // Success
     return 1;
@@ -444,18 +444,18 @@ size_t tuple_size ( const tuple *const p_tuple )
     }
 }
 
-int tuple_foreach ( const tuple *const p_tuple, void (*const function)(void *const value, size_t index) )
+int tuple_foreach ( const tuple *const p_tuple, void (*const pfn_function)(void *const value, size_t index) )
 {
 
     // Argument check
-    if ( p_tuple  == (void *) 0 ) goto no_tuple;
-    if ( function == (void *) 0 ) goto no_free_func;
+    if ( p_tuple      == (void *) 0 ) goto no_tuple;
+    if ( pfn_function == (void *) 0 ) goto no_func;
 
     // Iterate over each element in the tuple
     for (size_t i = 0; i < p_tuple->element_count; i++)
         
-        // Call the free function
-        function(p_tuple->elements[i], i);
+        // Call the function
+        pfn_function(p_tuple->_p_elements[i], i);
 
     // Success
     return 1;
@@ -473,9 +473,9 @@ int tuple_foreach ( const tuple *const p_tuple, void (*const function)(void *con
                 // Error
                 return 0;
             
-            no_free_func:
+            no_func:
                 #ifndef NDEBUG
-                    log_error("[tuple] Null pointer provided for parameter \"function\" in call to function \"%s\"\n", __FUNCTION__);
+                    log_error("[tuple] Null pointer provided for parameter \"pfn_function\" in call to function \"%s\"\n", __FUNCTION__);
                 #endif
 
                 // Error
@@ -493,14 +493,11 @@ int tuple_destroy ( tuple **const pp_tuple )
     // Initialized data
     tuple *p_tuple = *pp_tuple;
 
-    // No more pointer for end user
-    *pp_tuple = (tuple *) 0;
-
-    // Free the tuple contents
-    if ( TUPLE_REALLOC(p_tuple->elements, 0) ) goto failed_to_free;
+    // No more pointer for caller
+    *pp_tuple = (void *) 0;
 
     // Free the tuple
-    if ( TUPLE_REALLOC(p_tuple, 0) ) goto failed_to_free;
+    p_tuple = TUPLE_REALLOC(p_tuple, 0);
     
     // Success
     return 1;
@@ -513,17 +510,6 @@ int tuple_destroy ( tuple **const pp_tuple )
             no_tuple:
                 #ifndef NDEBUG
                     log_error("[tuple] Null pointer provided for parameter \"pp_tuple\" in call to function \"%s\"\n", __FUNCTION__);
-                #endif
-
-                // Error
-                return 0;
-        }
-
-        // Standard library errors
-        {
-            failed_to_free:
-                #ifndef NDEBUG
-                    log_error("[Standard Library] Failed to free memory in call to function \"%s\"\n", __FUNCTION__);
                 #endif
 
                 // Error

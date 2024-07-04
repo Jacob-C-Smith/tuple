@@ -297,7 +297,7 @@ int test_empty_tuple ( int (*tuple_constructor)(tuple **pp_tuple), char *name)
 {
 
     // Output
-    log_info("Scenario: %s\n", name);
+    log_scenario("%s\n", name);
 
     // Tests
     print_test(name, "tuple_index0", test_index(tuple_constructor, 0, (void *)0, zero) );
@@ -314,7 +314,7 @@ int test_one_element_tuple ( int (*tuple_constructor)(tuple **pp_tuple), char *n
 {
 
     // Output
-    log_info("SCENARIO: %s\n", name);
+    log_scenario("%s\n", name);
 
     // Tests
     print_test(name, "tuple_size"     , test_size(tuple_constructor, 1, match));
@@ -332,7 +332,7 @@ int test_two_element_tuple ( int (*tuple_constructor)(tuple **pp_tuple), char *n
 {
 
     // Output
-    log_info("SCENARIO: %s\n", name);
+    log_scenario("%s\n", name);
 
     // Tests
     print_test(name, "tuple_size"     , test_size(tuple_constructor, 2, match));
@@ -351,7 +351,7 @@ int test_three_element_tuple ( int (*tuple_constructor)(tuple **pp_tuple), char 
 {
 
     // Output
-    log_info("SCENARIO: %s\n", name);
+    log_scenario("%s\n", name);
 
     // Tests
     print_test(name, "tuple_size"     , test_size(tuple_constructor, 3, match));
