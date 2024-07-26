@@ -103,7 +103,7 @@ int tuple_construct ( tuple **const pp_tuple, size_t size )
     p_tuple = TUPLE_REALLOC(p_tuple, sizeof(tuple) + ( size * sizeof(void *) ) );
 
     // Error checking
-    if ( p_tuple->_p_elements == (void *) 0 ) goto no_mem;
+    if ( p_tuple == (void *) 0 ) goto no_mem;
 
     // Return a pointer to the caller
     *pp_tuple = p_tuple;
@@ -290,7 +290,7 @@ int tuple_index ( const tuple *const p_tuple, signed long long index, void **con
     if ( pp_value               == (void *) 0 ) goto no_value;
 
     // Error check
-    if ( p_tuple->element_count == llabs(index) ) goto bounds_error;
+    if ( p_tuple->element_count == (size_t) llabs(index) ) goto bounds_error;
 
     // Positive index
     if ( index >= 0 )

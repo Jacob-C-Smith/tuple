@@ -205,7 +205,7 @@ bool test_index ( int(*tuple_constructor)(tuple **pp_tuple), signed idx, void *e
     tuple_constructor(&p_tuple);
 
     // Index the tuple
-    result = tuple_index(p_tuple, idx, &result_value);
+    result = (result_t) tuple_index(p_tuple, idx, &result_value);
     
     // Match if tuple_index is successful ...
     if ( result == 1 )
@@ -231,7 +231,7 @@ bool test_slice ( int(*tuple_constructor)(tuple **pp_tuple), signed lower, signe
     tuple_constructor(&p_tuple);
 
     // Slice the tuple
-    result = tuple_slice(p_tuple, (const void **const)(&result_values), lower, upper);
+    result = (result_t) tuple_slice(p_tuple, (const void **const)(&result_values), lower, upper);
     
     // Error check
     if ( result == zero ) goto done;
