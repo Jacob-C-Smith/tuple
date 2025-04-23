@@ -15,11 +15,11 @@ add_compile_options(-Wall -Wextra -Wpointer-arith -Wstrict-prototypes -Wformat-s
 # Comment out for Debug mode
 set(IS_DEBUG_BUILD CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-# Build sync with semaphore
-add_compile_definitions(BUILD_SYNC_WITH_SEMAPHORE)
+# Build sync with timer
+add_compile_definitions(BUILD_SYNC_WITH_TIMER)
 
-# Build sync with monitor
-add_compile_definitions(BUILD_SYNC_WITH_MONITOR)
+# Build sync with mutex
+add_compile_definitions(BUILD_SYNC_WITH_MUTEX)
 
 # Set debug mode
 if (${IS_DEBUG_BUILD})
